@@ -68,9 +68,25 @@ describe('WoT Device tests', () => {
       },
     };
 
+    let eventCallback: WoT.WotListener;
+    const subscribe: SinonStub<[name: string,
+      listener: WoT.WotListener,
+      options?: WoT.InteractionOptions | undefined],
+    Promise<void>> = fake((event: string, callback: WoT.WotListener) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      eventCallback = callback;
+    }) as SinonStub<[name: string,
+      listener: WoT.WotListener, options?:
+      WoT.InteractionOptions | undefined], Promise < void>>;
+
+    mockConsumedThing.subscribeEvent = subscribe;
+
     testDevice = new WoTDevice(mockAdapter, 'test', td, mockConsumedThing);
+
+
     // eslint-disable-next-line dot-notation
-    expect(testDevice['openHandles']).to.be.empty;
+    const ilen: number = testDevice['openHandles'].length;
+    expect(ilen == 0);
   });
 
   it('Should invoke an action', async () => {
